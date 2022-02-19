@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Memory Card</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+
+		}
+
+		.container {
+			background-color: blue;
+			height: 100vh;
+			display: flex;
+
+		}
+
+		.memoryGame {
+			width: 640px;
+			height: 640px;
+			margin: auto;
+			display: flex;
+			flex-wrap: wrap;
+			-border: 2px solid lime;
+			perspective: 1000px;
+		}
+
+		.memoryCard {
+			width: calc(25% - 10px);
+			height: calc(33.333% - 10px);
+			margin: 5px;
+			position: relative;
+
+			-border: 2px solid lime;
+			-transform: scale(1);
+			transition: transform .5s;
+			transform-style: preserve-3d;
+		}
+
+		.memoryCard:active {
+			transform: scale(0.97);
+			transition: transform .2s;
+		}
+
+		.memoryCard.flip {
+			transform: rotateY(180deg);
+		}
+
+		.front-face,
+		.back-face {
+			width: 100%;
+			height: 100%;
+			padding: 20px;
+			position: absolute;
+			border-radius: 5px;
+			background: #6495ED;
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, .3);
+			backface-visibility: hidden;
+
+
+		}
+
+		.front-face {
+
+			transform: rotateY(180deg);
+
+		}
+		
+		h3[id=timer] {
+			text-align: center;
+			-width: 100%;
+			height: 10%;
+			color: white;
+			-display: flex;
+			-flex-wrap: wrap;
+			margin: 10px;
+			position: absolute;
+
+		}
+		
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h3 id='timer'></h3>
+		<section class="memoryGame">
+			<div class='memoryCard'>
+				<img src="react.svg" alt="React" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="react.svg" alt="React" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="vue.svg" alt="vue" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="vue.svg" alt="vue" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="ember.svg" alt="ember" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="ember.svg" alt="ember" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="angular.svg" alt="angular" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="angular.svg" alt="angular" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="aurelia.svg" alt="aurelia" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="aurelia.svg" alt="aurelia" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="backbone.svg" alt="backbone" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+			<div class='memoryCard'>
+				<img src="backbone.svg" alt="backbone" class="front-face">
+				<img src="js-badge.svg" alt="Memory Card" class="back-face">
+			</div>
+		</section>
+	</div>	
+
+	<script type="text/javascript">
+		confirm('Play Memory Card')
+
+		//const cards=document.getElementsByTagName('div')
+		const cards = document.querySelectorAll('.memoryCard')
+
+		//randomization the cards order
+		function shuffle() {
+			cards.forEach(card => {
+				let rand = Math.floor(Math.random() * 12)
+				card.style.order = rand
+
+			})
+		}
+		shuffle()
+
+
+		let flipLock = false
+		let flippedCards = []
+		var countDown = 90
+		let finished
+		var order_, temp, one
+		var cardsIndex = [...Array(12).keys()]
+		for (let i of cardsIndex) {
+			cardsIndex[i] = 0
+		}
+
+		//diplay a timer
+		(function timeOut() {
+			
+			var timerId = setInterval(function () {
+				var seconds = Math.floor(countDown % 60)
+				var minutes = Math.floor(countDown / 60);
+		
+				countDown -= 1
+
+				document.getElementById('timer')
+					.innerHTML =' Time: ' + minutes + ' Minutes ' + seconds + ' Second '
+
+				if (countDown < 0 || finished) {
+					clearInterval(timerId);
+					document.getElementById('timer').innerHTML = "Game Over"
+					document.getElementById('timer').style.backgroundColor='red'
+					reset()
+				}
+			}, 1000)
+
+		})()
+
+		cards.forEach(card => card.addEventListener('click', flip))
+
+
+		function flip() {
+			console.log(flipLock)
+			if (flipLock) return
+
+			var parent = this.parentNode;
+			// The equivalent of parent.children.indexOf(child)
+			order_ = Array.prototype.indexOf.call(parent.children, this);
+
+			//when a card have flipped already
+			cardsIndex[order_] += 1
+			if (cardsIndex[order_] > 2) {
+				return
+			}
+
+			//when a card being clicked twice
+			if (cardsIndex[order_] == 2) {
+				cardsIndex[order_] = 0
+				this.classList.remove('flip')
+				flippedCards = []
+				//console.log(a)
+
+			}
+
+			if (cardsIndex[order_] == 1) {
+				this.classList.add('flip')
+				one = 0
+				for (let i of cardsIndex) {
+					if (i == 1) {
+						one++
+					}
+				}
+				//when only one card is flipped
+				if (one != 2) {
+					temp = order_
+				}
+				//when two cards are flipped
+				else {
+					flipLock = true
+					flippedCards = document.querySelectorAll('.flip')
+					checkMatch()
+				}
+			}
+
+		}
+		//check two cards are matched
+		function checkMatch() {
+			let first = flippedCards[0].getElementsByTagName('img')[0]
+			let second = flippedCards[1].getElementsByTagName('img')[0]
+			//console.log(first, second)
+			if (first.alt == second.alt) {
+
+				//console.log('match')
+				cardsIndex[order_] += 2
+				cardsIndex[temp] += 2
+
+				flippedCards[0].classList.remove('flip')
+				flippedCards[0].style.transform = 'rotateY(180deg)'
+
+				flippedCards[1].style.transform = 'rotateY(180deg)'
+				flippedCards[1].classList.remove('flip')
+
+				flipLock = false
+				finalCheck()
+			}
+			else {
+
+				return unflip()
+			}
+			flippedCards = []
+
+
+		}
+		//unflip two unmatched cards
+		function unflip() {
+			setTimeout(function () {
+				//console.log(a[0]);
+				flippedCards[0].classList.remove('flip');
+				flippedCards[1].classList.remove('flip');
+				cardsIndex[order_] = 0;
+				cardsIndex[temp] = 0;
+				flipLock = false
+			}, 1500)
+
+		}
+
+		//check if the game is finished
+		function finalCheck() {
+			for (let i = 0; i < cardsIndex.length; i++) {
+				if (cardsIndex[i] > 2) {
+					if (i == cardsIndex.length - 1) {
+						alert('Congratulation ***  You Won!')
+						reset()
+
+					}
+				}
+				else {
+					break
+				}
+			}
+		}
+
+		//reset the game
+		function reset() {
+			finished=true
+			for (let i = 0; i < cardsIndex.length; i++) {
+				cardsIndex[i] = 0
+				cards[i].style.transform = 'rotateY(0deg)'
+			}
+		}
+
+	</script>
+</body>
+
+</html>
