@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heads&Tails</title>
+	
+</head>
+<body>
+	<h1>Play the Toss</h1>
+	<div id="d1" style="background-color:aqua;text-align:center;">
+ 		<div id="d2" style="display:block;margin-left: 10%; margin-right: 10%;">
+			<button id="b1" style="border: solid 1px white;padding: 5px 10px;margin:10px; font-size: 30px;">Heads
+			</button>
+			<button id="b2" style="border: solid 1px white;padding: 5px 10px;margin:10px; font-size: 30px;">Tails
+			</button>
+		</div><br />
+		<p id="p1"></p>
+		<p id="p2"></p>
+	</div>
+
+
+	<script type="text/javascript">
+	
+	let toss=['Heads','Tails']
+	
+	let p1=document.getElementById('p1')
+	let p2=document.getElementById('p2')
+
+	let b=document.getElementsByTagName('BUTTON')
+	//let b = document.getElementById('d1')
+	//console.log(b)
+	b[0].addEventListener("click",playerGuess_);
+	b[1].addEventListener("click",playerGuess_);
+
+	function playerGuess_(btn) {
+		var playerGuess=btn.target.innerText
+		//console.log(btn.value)
+		result(playerGuess)
+	}
+	
+	let score= [0,0]
+	function result(x) {
+		let computerGuess_=Math.round(Math.random())
+		let computerGuess=toss[computerGuess_]
+
+		if(x==computerGuess){
+			p1.innerHTML='player won'
+			p1.style.color='green'
+			score[0]++
+
+		}
+		else{
+			p1.innerHTML='computer won'
+			p1.style.color='red'
+			score[1]++
+
+		}
+		p2.innerHTML='player score: '+score[0]+' | computer score: '+score[1]
+	}
+	</script>
+</body>
+</html>
